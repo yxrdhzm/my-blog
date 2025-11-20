@@ -3,6 +3,7 @@
   "scripts": {
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
+     "preview": "npx vitepress preview docs",
     "lint": "eslint .",
     "format": "eslint . --fix",
     "gen-icons": "node docs/.vitepress/build/gen-icons.js"
