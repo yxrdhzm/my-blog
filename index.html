@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>月下人独的图片分享</title>
+  <title>月下人独</title>
   <style>
     * {
       margin: 0;
@@ -31,7 +31,7 @@
       max-width: 1200px;
       margin: 0 auto;
     }
-    .gallery img {
+    .gallery img, .gallery video {
       width: 100%;
       height: 250px;
       object-fit: cover;
@@ -40,7 +40,7 @@
       transition: transform 0.2s;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    .gallery img:hover {
+    .gallery img:hover, .gallery video:hover {
       transform: scale(1.03);
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
@@ -56,7 +56,7 @@
       justify-content: center;
       align-items: center;
     }
-    .modal img {
+    .modal img, .modal video {
       max-width: 90%;
       max-height: 90%;
       object-fit: contain;
@@ -75,56 +75,103 @@
 </head>
 <body>
   <header>
-    <h1>🖼 月下人独的图片分享</h1>
-    <p>点击图片可放大查看</p>
+    <h1>🖼 月下人独的壁纸分享</h1>
+    <p>点击壁纸可放大查看</p>
   </header>
 
   <div class="gallery" id="gallery">
-    <!-- 图片将由 JavaScript 自动加载 -->
+    <!-- 图片和视频将由 JavaScript 自动加载 -->
   </div>
 
   <!-- 模态框（用于放大） -->
   <div class="modal" id="modal">
     <span class="close" onclick="closeModal()">&times;</span>
-    <img id="modal-img">
+    <img id="modal-img" style="display:none;">
+    <video id="modal-video" controls style="display:none;">
+      <source id="modal-video-src" type="video/mp4">
+    </video>
   </div>
 
   <script>
-    // 配置：列出你的图片文件名
-    const imageFiles = [
+    // 配置：列出你的图片和视频文件名
+    const mediaFiles = [
       '1.jpg',
       '2.jpg',
       '3.jpg',
       '4.jpg',
-      // 👆 在这里添加你的图片文件名！
+      'output.mp4', // 示例视频
+      // 在此处添加更多图片或视频文件名
     ];
 
     const gallery = document.getElementById('gallery');
     const modal = document.getElementById('modal');
     const modalImg = document.getElementById('modal-img');
+    const modalVideo = document.getElementById('modal-video');
+    const modalVideoSrc = document.getElementById('modal-video-src');
 
-    // 动态生成图片网格
-    imageFiles.forEach(file => {
-      const img = document.createElement('img');
-      img.src = `images/${file}`;
-      img.alt = file;
-      img.onclick = () => {
-        modalImg.src = img.src;
+    // 动态生成媒体网格
+    mediaFiles.forEach(file => {
+      let element;
+      const filePath = `images/${file}`;
+      const isVideo = file.toLowerCase().endsWith('.mp4');
+
+      if (isVideo) {
+        element = document.createElement('video');
+        element.src = filePath;
+        element.muted = true;
+        element.loop = true;
+        element.playsInline = true;
+        element.onmouseenter = () => element.play();
+        element.onmouseleave = () => element.pause();
+      } else {
+        element = document.createElement('img');
+        element.src = filePath;
+        element.alt = file;
+      }
+
+      element.style.width = '100%';
+      element.style.height = '250px';
+      element.style.objectFit = 'cover';
+      element.style.borderRadius = '8px';
+      element.style.cursor = 'pointer';
+      element.style.transition = 'transform 0.2s';
+      element.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+      element.onclick = () => {
+        if (isVideo) {
+          modalVideoSrc.src = filePath;
+          modalVideo.load();
+          modalVideo.style.display = 'block';
+          modalImg.style.display = 'none';
+        } else {
+          modalImg.src = filePath;
+          modalImg.style.display = 'block';
+          modalVideo.style.display = 'none';
+        }
         modal.style.display = 'flex';
       };
-      gallery.appendChild(img);
+
+      element.onmouseenter = () => { 
+        element.style.transform = 'scale(1.03)'; 
+        element.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)'; 
+        if(isVideo) element.play(); 
+      };
+      element.onmouseleave = () => { 
+        element.style.transform = ''; 
+        element.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)'; 
+        if(isVideo) element.pause(); 
+      };
+
+      gallery.appendChild(element);
     });
 
     function closeModal() {
       modal.style.display = 'none';
     }
 
-    // 点击模态框外部关闭
     window.onclick = (e) => {
       if (e.target === modal) closeModal();
     };
 
-    // 键盘 ESC 关闭
     document.onkeydown = (e) => {
       if (e.key === 'Escape') closeModal();
     };
