@@ -3,41 +3,131 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>yxrdhzm 的博客</title>
+  <title>月下人独的图片分享</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 0 20px;
-      line-height: 1.6;
-      color: #333;
+      background: #f9f9f9;
+      padding: 20px;
     }
-    h1 { color: #2c3e50; }
-    a { color: #3498db; text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .gallery img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .gallery img:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* 模态框（点击放大） */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      border: 3px solid white;
+      border-radius: 4px;
+    }
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 40px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <h1>👋 你好，我是 yxrdhzm</h1>
-  <p>这是我的个人技术博客，记录学习与思考。</p>
+  <header>
+    <h1>🖼 我的图片分享</h1>
+    <p>点击图片可放大查看</p>
+  </header>
 
-  <h2>📚 最近在学</h2>
-  <ul>
-    <li>前端开发</li>
-    <li>Git 工作流</li>
-    <li>GitHub Pages 部署</li>
-  </ul>
+  <div class="gallery" id="gallery">
+    <!-- 图片将由 JavaScript 自动加载 -->
+  </div>
 
-  <h2>🔗 快速链接</h2>
-  <ul>
-    <li><a href="https://github.com/yxrdhzm">GitHub 主页</a></li>
-    <li><a href="https://github.com/yxrdhzm/my-blog">本博客源码</a></li>
-  </ul>
+  <!-- 模态框（用于放大） -->
+  <div class="modal" id="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img id="modal-img">
+  </div>
 
-  <hr>
-  <footer>
-    <p>简单，就是最好的开始。</p>
-  </footer>
+  <script>
+    // 配置：列出你的图片文件名
+    const imageFiles = [
+      '1.jpg',
+      '2.jpg',
+      '3.jpg',
+      '4.jpg',
+      // 👆 在这里添加你的图片文件名！
+    ];
+
+    const gallery = document.getElementById('gallery');
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modal-img');
+
+    // 动态生成图片网格
+    imageFiles.forEach(file => {
+      const img = document.createElement('img');
+      img.src = `images/${file}`;
+      img.alt = file;
+      img.onclick = () => {
+        modalImg.src = img.src;
+        modal.style.display = 'flex';
+      };
+      gallery.appendChild(img);
+    });
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    // 点击模态框外部关闭
+    window.onclick = (e) => {
+      if (e.target === modal) closeModal();
+    };
+
+    // 键盘 ESC 关闭
+    document.onkeydown = (e) => {
+      if (e.key === 'Escape') closeModal();
+    };
+  </script>
 </body>
 </html>
