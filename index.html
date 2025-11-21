@@ -9,7 +9,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
     }
 
     body {
@@ -18,6 +18,7 @@
       overflow-x: hidden;
     }
 
+    /* 导航栏 - 固定顶部 */
     .nav-container {
       position: fixed;
       top: 0;
@@ -33,6 +34,8 @@
       justify-content: center;
       gap: 25px;
       list-style: none;
+      margin: 0;
+      padding: 0;
     }
 
     #menu li {
@@ -47,6 +50,7 @@
       background: rgba(255, 255, 255, 0.1);
     }
 
+    /* 页面容器 */
     .page {
       min-height: 100vh;
       padding-top: 80px;
@@ -56,28 +60,17 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      position: relative;
     }
 
     .page.active {
       display: flex;
     }
 
-    /* 首页：默认背景 */
+    /* 背景图（仍用于首页/关于我） */
     #home {
+      background: url('images/1.jpg') center/cover no-repeat;
       color: white;
       text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-    }
-
-    /* 默认背景用伪元素 */
-    #home::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('images/1.jpg') center/cover no-repeat;
-      z-index: -1;
     }
 
     #about {
@@ -114,6 +107,7 @@
       color: black;
     }
 
+    /* 壁纸画廊网格 */
     .wallpaper-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -135,6 +129,7 @@
       aspect-ratio: 16 / 9;
     }
 
+    /* 弹窗 */
     .modal {
       display: none;
       position: fixed;
@@ -150,8 +145,8 @@
       background: #111;
       padding: 30px;
       border-radius: 15px;
-      max-width: 90%;
-      width: 400px;
+      max-width: 900px;
+      width: 90%;
       text-align: center;
     }
 
@@ -166,35 +161,8 @@
       font-size: 16px;
     }
 
-    /* 📱 手机端：仅旋转首页背景图（不碰文字） */
+    /* 手机适配 */
     @media (max-width: 768px) {
-      /* 隐藏默认背景 */
-      #home::before {
-        display: none;
-      }
-
-      /* 新增一个旋转背景容器 */
-      #home .rotated-bg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: -1;
-        background: url('images/1.jpg') center/cover no-repeat;
-        transform: rotate(90deg);
-        transform-origin: top left;
-        /* 关键：调整位置让旋转后的图居中 */
-        left: 100%;
-        top: 0;
-      }
-
-      /* 调整文字位置避免被裁剪 */
-      #home > div {
-        z-index: 10;
-        padding: 0 20px;
-      }
-
       h1 { font-size: 1.8rem; }
       p { font-size: 1rem; }
       #menu li { font-size: 14px; padding: 6px 12px; }
@@ -214,6 +182,7 @@
 </head>
 <body>
 
+  <!-- 导航菜单 -->
   <div class="nav-container">
     <ul id="menu">
       <li data-page="home">🏠 首页</li>
@@ -224,14 +193,9 @@
 
   <!-- 首页 -->
   <section id="home" class="page active">
-    <!-- 旋转背景容器（仅手机显示） -->
-    <div class="rotated-bg"></div>
-    <!-- 内容 -->
-    <div>
-      <h1>月下人独</h1>
-      <p>欢迎来到我的博客<br>这里什么也没有。</p>
-      <button onclick="navigate('wallpapers')">进入壁纸世界</button>
-    </div>
+    <h1>月下人独</h1>
+    <p>欢迎来到我的博客<br>这里什么也没有。</p>
+    <button onclick="navigate('wallpapers')">进入壁纸世界</button>
   </section>
 
   <!-- 壁纸分享引导页 -->
@@ -241,7 +205,7 @@
     <button onclick="showPasswordModal()">确认</button>
   </section>
 
-  <!-- 壁纸画廊 -->
+  <!-- 壁纸画廊（包含全部图片 + 视频） -->
   <section id="gallery" class="page">
     <h1>🖼️ 我的壁纸</h1>
     <div class="wallpaper-grid">
@@ -272,6 +236,7 @@
   </div>
 
   <script>
+    // 页面切换
     function navigate(pageId) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       const target = document.getElementById(pageId);
@@ -282,6 +247,7 @@
       });
     }
 
+    // 密码弹窗
     function showPasswordModal() {
       document.getElementById('passwordModal').style.display = 'flex';
     }
@@ -290,29 +256,34 @@
       document.getElementById('passwordModal').style.display = 'none';
     }
 
+    // 密码验证（默认密码：123456）
     function checkPassword() {
       const pwd = document.getElementById('passwordInput').value;
       if (pwd === '123456') {
         closeModal();
-        navigate('gallery');
+        navigate('gallery'); // 跳转到壁纸画廊
       } else {
         alert('密码错误，请重试 ❌');
       }
     }
 
+    // 初始化
     document.querySelector('#menu li[data-page="home"]').classList.add('active');
 
+    // 菜单点击
     document.querySelectorAll('#menu li').forEach(li => {
       li.addEventListener('click', () => {
         navigate(li.dataset.page);
       });
     });
 
+    // 点击弹窗外关闭
     window.onclick = function(e) {
       const modal = document.getElementById('passwordModal');
       if (e.target === modal) closeModal();
     };
 
+    // 视频互斥播放（可选）
     document.querySelectorAll('video').forEach(video => {
       video.addEventListener('play', () => {
         document.querySelectorAll('video').forEach(v => {
