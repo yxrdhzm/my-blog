@@ -9,7 +9,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
     }
 
     body {
@@ -18,7 +18,6 @@
       overflow-x: hidden;
     }
 
-    /* 导航栏 */
     .nav-container {
       position: fixed;
       top: 0;
@@ -34,8 +33,6 @@
       justify-content: center;
       gap: 25px;
       list-style: none;
-      margin: 0;
-      padding: 0;
     }
 
     #menu li {
@@ -50,7 +47,6 @@
       background: rgba(255, 255, 255, 0.1);
     }
 
-    /* 页面容器 */
     .page {
       min-height: 100vh;
       padding-top: 80px;
@@ -60,20 +56,30 @@
       align-items: center;
       justify-content: center;
       text-align: center;
+      position: relative;
     }
 
     .page.active {
       display: flex;
     }
 
-    /* 首页背景 - 默认不旋转 */
+    /* 首页：默认背景 */
     #home {
-      background: url('images/1.jpg') center/cover no-repeat;
       color: white;
       text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
     }
 
-    /* 关于我背景 */
+    /* 默认背景用伪元素 */
+    #home::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('images/1.jpg') center/cover no-repeat;
+      z-index: -1;
+    }
+
     #about {
       background: url('images/2.jpg') center/cover no-repeat;
       color: white;
@@ -108,7 +114,6 @@
       color: black;
     }
 
-    /* 壁纸画廊 */
     .wallpaper-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -130,7 +135,6 @@
       aspect-ratio: 16 / 9;
     }
 
-    /* 弹窗 */
     .modal {
       display: none;
       position: fixed;
@@ -146,8 +150,8 @@
       background: #111;
       padding: 30px;
       border-radius: 15px;
-      max-width: 900px;
-      width: 90%;
+      max-width: 90%;
+      width: 400px;
       text-align: center;
     }
 
@@ -162,43 +166,39 @@
       font-size: 16px;
     }
 
-    /* 📱 手机端特殊处理：仅首页背景旋转 */
+    /* 📱 手机端：仅旋转首页背景图（不碰文字） */
     @media (max-width: 768px) {
-      /* 首页背景旋转 90° 向右（顺时针） */
-      #home {
-        transform: rotate(90deg);
-        transform-origin: top left;
-        width: 178vh;   /* 约等于 100vw 旋转后所需高度 */
-        height: 178vw;  /* 约等于 100vh 旋转后所需宽度 */
-        background-size: cover;
-        background-position: center;
+      /* 隐藏默认背景 */
+      #home::before {
+        display: none;
+      }
+
+      /* 新增一个旋转背景容器 */
+      #home .rotated-bg {
         position: absolute;
         top: 0;
         left: 0;
-        padding-top: 0 !important;
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        background: url('images/1.jpg') center/cover no-repeat;
+        transform: rotate(90deg);
+        transform-origin: top left;
+        /* 关键：调整位置让旋转后的图居中 */
+        left: 100%;
+        top: 0;
+      }
+
+      /* 调整文字位置避免被裁剪 */
+      #home > div {
         z-index: 10;
-      }
-
-      /* 调整首页内容位置（因为背景旋转了，文字也要跟着转回来） */
-      #home > * {
-        transform: rotate(-90deg);
-        transform-origin: center;
-        position: relative;
-        z-index: 20;
-        max-width: 80vh; /* 限制宽度避免溢出 */
-      }
-
-      /* 其他页面不受影响 */
-      #about {
-        padding-top: 70px;
+        padding: 0 20px;
       }
 
       h1 { font-size: 1.8rem; }
       p { font-size: 1rem; }
       #menu li { font-size: 14px; padding: 6px 12px; }
+      .page { padding-top: 70px; }
       .wallpaper-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
@@ -214,7 +214,6 @@
 </head>
 <body>
 
-  <!-- 导航菜单 -->
   <div class="nav-container">
     <ul id="menu">
       <li data-page="home">🏠 首页</li>
@@ -225,6 +224,9 @@
 
   <!-- 首页 -->
   <section id="home" class="page active">
+    <!-- 旋转背景容器（仅手机显示） -->
+    <div class="rotated-bg"></div>
+    <!-- 内容 -->
     <div>
       <h1>月下人独</h1>
       <p>欢迎来到我的博客<br>这里什么也没有。</p>
