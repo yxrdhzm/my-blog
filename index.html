@@ -18,7 +18,7 @@
       overflow-x: hidden;
     }
 
-    /* 导航栏 - 固定顶部 */
+    /* 导航栏 */
     .nav-container {
       position: fixed;
       top: 0;
@@ -66,13 +66,14 @@
       display: flex;
     }
 
-    /* 背景图（仍用于首页/关于我） */
+    /* 首页背景 - 默认不旋转 */
     #home {
       background: url('images/1.jpg') center/cover no-repeat;
       color: white;
       text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
     }
 
+    /* 关于我背景 */
     #about {
       background: url('images/2.jpg') center/cover no-repeat;
       color: white;
@@ -107,7 +108,7 @@
       color: black;
     }
 
-    /* 壁纸画廊网格 */
+    /* 壁纸画廊 */
     .wallpaper-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -161,12 +162,43 @@
       font-size: 16px;
     }
 
-    /* 手机适配 */
+    /* 📱 手机端特殊处理：仅首页背景旋转 */
     @media (max-width: 768px) {
+      /* 首页背景旋转 90° 向右（顺时针） */
+      #home {
+        transform: rotate(90deg);
+        transform-origin: top left;
+        width: 178vh;   /* 约等于 100vw 旋转后所需高度 */
+        height: 178vw;  /* 约等于 100vh 旋转后所需宽度 */
+        background-size: cover;
+        background-position: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding-top: 0 !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+
+      /* 调整首页内容位置（因为背景旋转了，文字也要跟着转回来） */
+      #home > * {
+        transform: rotate(-90deg);
+        transform-origin: center;
+        position: relative;
+        z-index: 20;
+        max-width: 80vh; /* 限制宽度避免溢出 */
+      }
+
+      /* 其他页面不受影响 */
+      #about {
+        padding-top: 70px;
+      }
+
       h1 { font-size: 1.8rem; }
       p { font-size: 1rem; }
       #menu li { font-size: 14px; padding: 6px 12px; }
-      .page { padding-top: 70px; }
       .wallpaper-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
@@ -193,9 +225,11 @@
 
   <!-- 首页 -->
   <section id="home" class="page active">
-    <h1>月下人独</h1>
-    <p>欢迎来到我的博客<br>这里什么也没有。</p>
-    <button onclick="navigate('wallpapers')">进入壁纸世界</button>
+    <div>
+      <h1>月下人独</h1>
+      <p>欢迎来到我的博客<br>这里什么也没有。</p>
+      <button onclick="navigate('wallpapers')">进入壁纸世界</button>
+    </div>
   </section>
 
   <!-- 壁纸分享引导页 -->
@@ -205,7 +239,7 @@
     <button onclick="showPasswordModal()">确认</button>
   </section>
 
-  <!-- 壁纸画廊（包含全部图片 + 视频） -->
+  <!-- 壁纸画廊 -->
   <section id="gallery" class="page">
     <h1>🖼️ 我的壁纸</h1>
     <div class="wallpaper-grid">
@@ -236,7 +270,6 @@
   </div>
 
   <script>
-    // 页面切换
     function navigate(pageId) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       const target = document.getElementById(pageId);
@@ -247,7 +280,6 @@
       });
     }
 
-    // 密码弹窗
     function showPasswordModal() {
       document.getElementById('passwordModal').style.display = 'flex';
     }
@@ -256,34 +288,29 @@
       document.getElementById('passwordModal').style.display = 'none';
     }
 
-    // 密码验证（默认密码：123456）
     function checkPassword() {
       const pwd = document.getElementById('passwordInput').value;
       if (pwd === '123456') {
         closeModal();
-        navigate('gallery'); // 跳转到壁纸画廊
+        navigate('gallery');
       } else {
         alert('密码错误，请重试 ❌');
       }
     }
 
-    // 初始化
     document.querySelector('#menu li[data-page="home"]').classList.add('active');
 
-    // 菜单点击
     document.querySelectorAll('#menu li').forEach(li => {
       li.addEventListener('click', () => {
         navigate(li.dataset.page);
       });
     });
 
-    // 点击弹窗外关闭
     window.onclick = function(e) {
       const modal = document.getElementById('passwordModal');
       if (e.target === modal) closeModal();
     };
 
-    // 视频互斥播放（可选）
     document.querySelectorAll('video').forEach(video => {
       video.addEventListener('play', () => {
         document.querySelectorAll('video').forEach(v => {
