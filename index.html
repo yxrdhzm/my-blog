@@ -2,8 +2,9 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>月下人独</title>
+  
   <style>
     /* 全局重置 */
     * {
@@ -234,15 +235,38 @@
 
     /* 响应式 */
     @media (max-width: 768px) {
-      .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-      }
-      .main-content {
-        margin-left: 0;
-      }
+    .nav-menu {  /* 假设菜单的class是nav-menu */
+      height: 40px;        /* 原高度若为100px，此处减小 */
+      font-size: 14px;     /* 字体适配小屏 */
     }
+  }
+    /* === 手机适配：菜单变小 + 背景图完整显示 === */
+  @media (max-width: 768px) {
+    .nav-container {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 8px 0;
+      z-index: 100;
+    }
+    #menu {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    #menu li {
+      font-size: 14px;
+      color: white;
+      cursor: pointer;
+    }
+    #home, #about {
+      padding-top: 60px; /* 避免被顶部菜单挡住 */
+    }
+  } 
   </style>
 </head>
 <body>
@@ -250,11 +274,13 @@
   <aside class="sidebar">
     <h2>月下人独</h2>
     <nav>
-      <ul id="menu">
-        <li data-page="home" class="active">🏠 首页</li>
-        <li data-page="wallpapers">🖼 壁纸分享</li>
-        <li data-page="about">ℹ 关于我</li>
-      </ul>
+      <div class="nav-container">
+        <ul id="menu">
+          <li data-page="home">🏠 首页</li>
+          <li data-page="wallpapers">🖼️ 壁纸分享</li>
+          <li data-page="about">关于我</li>
+        </ul>
+  </div>
     </nav>
   </aside>
 
