@@ -4,519 +4,293 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>月下人独</title>
-  
   <style>
-    /* 全局重置 */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
     }
 
-    /* 页面布局 */
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      display: flex;
-      min-height: 100vh;
-      background: #f5f5f5;
-    }
-    /* === 首页背景图样式 === */
-  #home {
-    background: url('images/1.jpg') center/cover no-repeat;
-    padding: 20px;
-    color: white;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
-    min-height: 100vh;
-    position: relative;
-  }
-  #home::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.3);
-    z-index: 1;
-  }
-  #home > * {
-    position: relative;
-    z-index: 2;
-  }
- /* === 新增的等比例样式 === */
-  .equal-ratio {
-    width: 100%;
-    height: 200px;
-    object-fit: contain;
-    background: #f0f0f0;
-    border-radius: 8px;
-    margin-bottom: 10px;
-  }
-    /* 左侧菜单 */
-    .sidebar {
-      width: 250px;
-      background: #2c3e50;
+      background: #000;
       color: white;
-      padding: 20px 0;
+      overflow-x: hidden;
+    }
+
+    /* 导航栏 - 固定顶部 */
+    .nav-container {
       position: fixed;
-      height: 100vh;
-      overflow-y: auto;
+      top: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 100;
+      padding: 10px 0;
     }
-    .sidebar h2 {
-      text-align: center;
-      padding: 10px;
-      font-size: 1.5rem;
-      border-bottom: 1px solid #34495e;
-      margin-bottom: 20px;
-    }
-    .sidebar nav ul {
+
+    #menu {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
       list-style: none;
+      margin: 0;
+      padding: 0;
     }
-    .sidebar nav ul li {
-      padding: 12px 20px;
-      border-bottom: 1px solid #34495e;
+
+    #menu li {
       cursor: pointer;
+      font-size: 16px;
+      padding: 8px 16px;
+      border-radius: 20px;
       transition: background 0.3s;
     }
-    .sidebar nav ul li:hover,
-    .sidebar nav ul li.active {
-      background: #34495e;
+
+    #menu li:hover, #menu li.active {
+      background: rgba(255, 255, 255, 0.1);
     }
 
-    /* 主内容区 */
-    .main-content {
-      flex: 1;
-      margin-left: 250px;
-      padding: 20px;
-      background: white;
-      position: relative;
+    /* 页面容器 */
+    .page {
       min-height: 100vh;
+      padding-top: 80px;
+      padding-bottom: 40px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
 
-    /* 页面过渡动画 */
-      .page {
-    position: absolute; /* 脱离文档流 */
-    top: 0;
-    left: 0;
-    width: 100%;
-    min-height: 100vh; /* 至少一屏高 */
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.4s ease;
-  }
+    .page.active {
+      display: flex;
+    }
 
-  .page.active {
-    opacity: 1;
-    visibility: visible;
-  }
+    /* 背景图（仍用于首页/关于我） */
+    #home {
+      background: url('images/1.jpg') center/cover no-repeat;
+      color: white;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    }
 
-    /* 壁纸网格 */
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 16px;
-      max-width: 1200px;
+    #about {
+      background: url('images/2.jpg') center/cover no-repeat;
+      color: white;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    button {
       margin-top: 20px;
-    }
-    .gallery img,
-    .gallery video {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-      border-radius: 8px;
+      padding: 10px 24px;
+      font-size: 16px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 1px solid white;
+      border-radius: 30px;
       cursor: pointer;
-      transition: transform 0.2s;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .gallery img:hover,
-    .gallery video:hover {
-      transform: scale(1.03);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: all 0.3s;
     }
 
-    /* 模态框（放大查看） */
+    button:hover {
+      background: white;
+      color: black;
+    }
+
+    /* 壁纸画廊网格 */
+    .wallpaper-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+      max-width: 900px;
+      width: 90%;
+    }
+
+    .wallpaper-grid img,
+    .wallpaper-grid video {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .wallpaper-grid video {
+      aspect-ratio: 16 / 9;
+    }
+
+    /* 弹窗 */
     .modal {
       display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
       background: rgba(0,0,0,0.9);
-      z-index: 1000;
+      z-index: 200;
       justify-content: center;
       align-items: center;
-    }
-    .modal img,
-    .modal video {
-      max-width: 90%;
-      max-height: 90%;
-      object-fit: contain;
-      border: 3px solid white;
-      border-radius: 4px;
-    }
-    .close {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      color: white;
-      font-size: 40px;
-      cursor: pointer;
     }
 
-    /* 密码弹窗（用于壁纸页） */
-    #wallpaper-password-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      z-index: 2000;
-      justify-content: center;
-      align-items: center;
-    }
-    #password-box {
-      background: white;
+    .modal-content {
+      background: #111;
       padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      max-width: 400px;
+      border-radius: 15px;
+      max-width: 900px;
       width: 90%;
+      text-align: center;
     }
-    #password-box h2 {
-      margin-bottom: 20px;
-      color: #333;
-    }
-    #wallpaper-password-input {
+
+    input {
       width: 100%;
       padding: 12px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      margin-bottom: 15px;
-    }
-    #wallpaper-password-submit {
-      background: #4a6fa5;
+      margin: 15px 0;
+      border-radius: 8px;
+      border: 1px solid #555;
+      background: #222;
       color: white;
-      border: none;
-      padding: 10px 20px;
       font-size: 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
-    }
-    #wallpaper-password-error {
-      color: red;
-      margin-top: 10px;
-      min-height: 20px;
     }
 
-    /* 关于我页面背景图 */
-    #about {
-    background: url('images/2.jpg') center/cover no-repeat;
-    color: white;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* 垂直居中 */
-    align-items: center;     /* 水平居中 */
-  }
-
-
-/* 半透明遮罩（提升文字可读性） */
-#about::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.3); /* 黑色半透明遮罩 */
-  z-index: 1;
-}
-
-/* 内容层 */
-#about > * {
-  position: relative;
-  z-index: 2;
-}
-
-    /* 响应式 */
+    /* 手机适配 */
     @media (max-width: 768px) {
-    .nav-menu {  /* 假设菜单的class是nav-menu */
-      height: 40px;        /* 原高度若为100px，此处减小 */
-      font-size: 14px;     /* 字体适配小屏 */
+      h1 { font-size: 1.8rem; }
+      p { font-size: 1rem; }
+      #menu li { font-size: 14px; padding: 6px 12px; }
+      .page { padding-top: 70px; }
+      .wallpaper-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
     }
-  }
-    /* === 手机适配：菜单变小 + 背景图完整显示 === */
-  @media (max-width: 768px) {
-    .nav-container {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 8px 0;
-      z-index: 100;
+
+    @media (max-width: 480px) {
+      .wallpaper-grid {
+        grid-template-columns: 1fr;
+      }
     }
-    #menu {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-    #menu li {
-      font-size: 14px;
-      color: white;
-      cursor: pointer;
-    }
-    #home, #about {
-      padding-top: 60px; /* 避免被顶部菜单挡住 */
-    }
-  } 
   </style>
 </head>
 <body>
-  <!-- 左侧菜单 -->
-  <aside class="sidebar">
-    <h2>月下人独</h2>
-    <nav>
-      <div class="nav-container">
-        <ul id="menu">
-          <li data-page="home">🏠 首页</li>
-          <li data-page="wallpapers">🖼️ 壁纸分享</li>
-          <li data-page="about">关于我</li>
-        </ul>
-  </div>
-    </nav>
-  </aside>
 
-  <!-- 主内容区 -->
-  <main class="main-content">
-    <!-- 首页（已移除按钮） -->
-    <section id="home" class="page active">
-    <h1>欢迎来到我的博客</h1>
-    <p>这里什么也没有。</p>
-    <button onclick="navigate('wallpapers')" style="margin-top: 20px;">
-      进入壁纸世界
-    </button>
-  <!-- 个人简介 -->
-  <div class="intro-card">
-    <h3>
-
-    </h3>
-    <p>
-
-    </p>
+  <!-- 导航菜单 -->
+  <div class="nav-container">
+    <ul id="menu">
+      <li data-page="home">🏠 首页</li>
+      <li data-page="wallpapers">🖼️ 壁纸分享</li>
+      <li data-page="about">关于我</li>
+    </ul>
   </div>
 
-  <!-- 最新动态 -->
-  <div class="announcement">
-    <h3>最新动态</h3>
-    <p>🎉 新增5款壁纸！</p>
-  </div>
-  
-</section>
+  <!-- 首页 -->
+  <section id="home" class="page active">
+    <h1>月下人独</h1>
+    <p>欢迎来到我的博客<br>这里什么也没有。</p>
+    <button onclick="navigate('wallpapers')">进入壁纸世界</button>
+  </section>
 
-    <!-- 壁纸分享页（初始为空） -->
-    <section id="wallpapers" class="page">
-      <h1>🖼 壁纸分享</h1>
-      <p>输入密码后即可查看高清壁纸与动态视频。</p>
-      <div class="gallery" id="gallery"></div>
-    </section>
+  <!-- 壁纸分享引导页 -->
+  <section id="wallpapers" class="page">
+    <h1>🖼️ 壁纸分享</h1>
+    <p>输入密码后即可查看高清壁纸与动态视频。</p>
+    <button onclick="showPasswordModal()">确认</button>
+  </section>
 
-    <!-- 关于我 -->
-    <section id="about" class="page">
-      <div">
-        <h1>关于我</h1>
-        <p>我是月下人独。<br>此博客用于测试。</p>
-      </div>
-    </section>
-  </main>
+  <!-- 壁纸画廊（包含全部图片 + 视频） -->
+  <section id="gallery" class="page">
+    <h1>🖼️ 我的壁纸</h1>
+    <div class="wallpaper-grid">
+      <img src="images/1.jpg" alt="首页背景">
+      <img src="images/2.jpg" alt="关于我背景">
+      <img src="images/3.jpg" alt="壁纸1">
+      <img src="images/4.jpg" alt="壁纸2">
+      <video src="images/output.mp4" controls muted></video>
+    </div>
+    <button onclick="navigate('home')" style="margin-top:20px;">返回首页</button>
+  </section>
 
-  <!-- 壁纸放大模态框 -->
-  <div class="modal" id="modal">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <img id="modal-img" style="display:none;">
-    <video id="modal-video" controls style="display:none;">
-      <source id="modal-video-src" type="video/mp4">
-    </video>
-  </div>
+  <!-- 关于我 -->
+  <section id="about" class="page">
+    <h1>关于我</h1>
+    <p>我是月下人独。<br>此博客用于测试。</p>
+  </section>
 
-  <!-- 壁纸页密码弹窗 -->
-  <div id="wallpaper-password-modal">
-    <div id="password-box">
+  <!-- 密码弹窗 -->
+  <div id="passwordModal" class="modal">
+    <div class="modal-content">
       <h2>🔒 访问壁纸分享</h2>
       <p>请输入访问密码：</p>
-      <!-- ✅ placeholder 已清空，不显示“例如...” -->
-      <input type="password" id="wallpaper-password-input" placeholder="" autocomplete="off" />
-      <button id="wallpaper-password-submit">确认</button>
-      <div id="wallpaper-password-error"></div>
+      <input type="password" id="passwordInput" placeholder="输入密码">
+      <button onclick="checkPassword()">确认</button>
+      <button onclick="closeModal()" style="margin-top:10px; background:#555;">×</button>
     </div>
   </div>
 
   <script>
-    // ======================
-    // 全局配置
-    // ======================
-    const CORRECT_PASSWORD = "yxrd123456";
-    const MAX_ATTEMPTS = 3;
-    let wallpaperAttempts = 0;
-    let wallpapersLoaded = false;
-
-    // ======================
-    // 页面导航函数
-    // ======================
+    // 页面切换
     function navigate(pageId) {
-      if (pageId === "wallpapers" && !wallpapersLoaded) {
-        showWallpaperPasswordModal();
-        return;
-      }
-
-      document.querySelectorAll("#menu li").forEach(li => {
-        li.classList.remove("active");
-        if (li.dataset.page === pageId) li.classList.add("active");
-      });
-
-      document.querySelectorAll(".page").forEach(page => {
-        page.classList.remove("active");
-      });
-      document.getElementById(pageId).classList.add("active");
-      window.scrollTo(0, 0);
-      document.getElementById(pageId).focus({ preventScroll: true });
-    }
-
-    document.querySelectorAll("#menu li").forEach(li => {
-      li.onclick = () => navigate(li.dataset.page);
-    });
-
-    // ======================
-    // 壁纸密码验证
-    // ======================
-    function showWallpaperPasswordModal() {
-      const modal = document.getElementById("wallpaper-password-modal");
-      const input = document.getElementById("wallpaper-password-input");
-      const submit = document.getElementById("wallpaper-password-submit");
-      const error = document.getElementById("wallpaper-password-error");
-
-      input.value = "";
-      error.textContent = "";
-      input.focus();
-
-      modal.style.display = "flex";
-
-      const handleVerify = () => {
-        const pwd = input.value.trim();
-        if (pwd === CORRECT_PASSWORD) {
-          modal.style.display = "none";
-          wallpapersLoaded = true;
-          navigate("wallpapers");
-          loadWallpapers();
-        } else {
-          wallpaperAttempts++;
-          if (wallpaperAttempts >= MAX_ATTEMPTS) {
-            error.textContent = "❌ 错误次数过多，返回首页。";
-            setTimeout(() => {
-              modal.style.display = "none";
-              navigate("home");
-            }, 2000);
-          } else {
-            error.textContent = `密码错误！剩余 ${MAX_ATTEMPTS - wallpaperAttempts} 次`;
-            input.value = "";
-            input.focus();
-          }
-        }
-      };
-
-      submit.onclick = handleVerify;
-      input.onkeypress = (e) => {
-        if (e.key === "Enter") handleVerify();
-      };
-    }
-
-    // ======================
-    // 加载壁纸
-    // ======================
-    function loadWallpapers() {
-      const gallery = document.getElementById("gallery");
-      gallery.innerHTML = "";
-
-      const mediaFiles = [
-        '1.jpg',
-        '2.jpg',
-        '3.jpg',
-        '4.jpg',
-        'output.mp4'
-      ];
-
-      mediaFiles.forEach(file => {
-        const filePath = `images/${file}`;
-        const isVideo = file.toLowerCase().endsWith('.mp4');
-        const element = isVideo
-          ? document.createElement('video')
-          : document.createElement('img');
-
-        if (isVideo) {
-          element.src = filePath;
-          element.muted = true;
-          element.loop = true;
-          element.playsInline = true;
-        } else {
-          element.src = filePath;
-          element.alt = file;
-        }
-
-        element.style.width = '100%';
-        element.style.height = '250px';
-        element.style.objectFit = 'cover';
-        element.style.borderRadius = '8px';
-        element.style.cursor = 'pointer';
-        element.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-        element.style.transition = 'transform 0.2s';
-
-        element.onclick = () => openModal(filePath, isVideo);
-
-        element.onmouseenter = () => {
-          element.style.transform = 'scale(1.03)';
-          element.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-          if (isVideo) element.play();
-        };
-        element.onmouseleave = () => {
-          element.style.transform = '';
-          element.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-          if (isVideo) element.pause();
-        };
-
-        gallery.appendChild(element);
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById(pageId);
+      if (target) target.classList.add('active');
+      
+      document.querySelectorAll('#menu li').forEach(li => {
+        li.classList.toggle('active', li.dataset.page === pageId);
       });
     }
 
-    // ======================
-    // 模态框操作
-    // ======================
-    function openModal(src, isVideo) {
-      const modal = document.getElementById("modal");
-      const img = document.getElementById("modal-img");
-      const video = document.getElementById("modal-video");
-      const videoSrc = document.getElementById("modal-video-src");
-
-      if (isVideo) {
-        videoSrc.src = src;
-        video.load();
-        video.style.display = "block";
-        img.style.display = "none";
-      } else {
-        img.src = src;
-        img.style.display = "block";
-        video.style.display = "none";
-      }
-      modal.style.display = "flex";
+    // 密码弹窗
+    function showPasswordModal() {
+      document.getElementById('passwordModal').style.display = 'flex';
     }
 
     function closeModal() {
-      document.getElementById("modal").style.display = "none";
+      document.getElementById('passwordModal').style.display = 'none';
     }
 
-    window.onclick = (e) => {
-      if (e.target.id === "modal") closeModal();
+    // 密码验证（默认密码：123456）
+    function checkPassword() {
+      const pwd = document.getElementById('passwordInput').value;
+      if (pwd === '123456') {
+        closeModal();
+        navigate('gallery'); // 跳转到壁纸画廊
+      } else {
+        alert('密码错误，请重试 ❌');
+      }
+    }
+
+    // 初始化
+    document.querySelector('#menu li[data-page="home"]').classList.add('active');
+
+    // 菜单点击
+    document.querySelectorAll('#menu li').forEach(li => {
+      li.addEventListener('click', () => {
+        navigate(li.dataset.page);
+      });
+    });
+
+    // 点击弹窗外关闭
+    window.onclick = function(e) {
+      const modal = document.getElementById('passwordModal');
+      if (e.target === modal) closeModal();
     };
 
-    document.onkeydown = (e) => {
-      if (e.key === "Escape") closeModal();
-    };
+    // 视频互斥播放（可选）
+    document.querySelectorAll('video').forEach(video => {
+      video.addEventListener('play', () => {
+        document.querySelectorAll('video').forEach(v => {
+          if (v !== video) v.pause();
+        });
+      });
+    });
   </script>
 </body>
 </html>
