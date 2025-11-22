@@ -1,36 +1,53 @@
+# GitHub Actions 工作流：部署静态博客网站到 GitHub Pages
+# 此配置文件定义了自动部署流程，当代码推送到 main 分支时触发
+
 name: Deploy Static Site
 
+# 触发条件：当代码推送到 main 分支时自动启动工作流
 on:
   push:
     branches: [ main ]
 
+# 权限配置：设置工作流所需的最低权限范围
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: read           # 读取代码仓库内容的权限
+  pages: write             # 写入 GitHub Pages 资源的权限
+  id-token: write          # 获取和写入 ID 令牌的权限（用于部署身份验证）
 
+# 并发控制：确保同一时间只有一个部署流程在运行
+# 当有新的部署请求时，取消正在进行的部署任务
 concurrency:
   group: pages
   cancel-in-progress: true
 
+# 作业定义：定义部署任务
 jobs:
   deploy:
+    # 环境配置：指定部署目标环境
     environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+      name: github-pages    # 环境名称为 github-pages
+      url: ${{ steps.deployment.outputs.page_url }}  # 部署完成后显示页面 URL
+    runs-on: ubuntu-latest  # 运行环境：使用最新的 Ubuntu 环境
+    
+    # 步骤定义：部署流程的详细步骤
     steps:
+      # 步骤 1：检出代码仓库
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4  # 使用官方的检出动作，获取代码
 
+      # 步骤 2：配置 GitHub Pages
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v4  # 配置 GitHub Pages 环境
 
+      # 步骤 3：上传构建产物
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v3  # 上传部署所需的文件
         with:
-          path: .   # ← 发布整个项目根目录！
+          path: .   # 部署路径配置：发布整个项目根目录
+          # 注意：此配置会将项目中的所有文件都部署到 GitHub Pages
+          # 如果需要只部署特定目录，可以修改此处路径，例如 './dist' 或 './public'
 
+      # 步骤 4：部署到 GitHub Pages
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        id: deployment  # 设置步骤 ID，用于引用输出结果
+        uses: actions/deploy-pages@v4  # 执行实际部署操作

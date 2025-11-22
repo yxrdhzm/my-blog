@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>月下人独</title>
   <style>
+    /**
+     * 基础样式重置与全局设置
+     * @description 重置默认浏览器样式，设置全局字体和基础颜色
+     */
     * {
       margin: 0;
       padding: 0;
@@ -18,7 +22,10 @@
       overflow-x: hidden;
     }
 
-    /* 导航栏 - 固定顶部 */
+    /**
+     * 导航栏样式
+     * @description 固定在顶部的导航栏，带有半透明背景和模糊效果
+     */
     .nav-container {
       position: fixed;
       top: 0;
@@ -50,7 +57,11 @@
       background: rgba(255, 255, 255, 0.1);
     }
 
-    /* 页面容器 */
+    /**
+     * 页面容器样式
+     * @description 定义每个页面区块的基本布局和动画效果
+     * @note 页面默认隐藏，通过添加.active类来显示
+     */
     .page {
       min-height: 100vh;
       padding-top: 80px;
@@ -66,7 +77,10 @@
       display: flex;
     }
 
-    /* 背景图（仍用于首页/关于我） */
+    /**
+     * 特定页面背景样式
+     * @description 为首页和关于我页面设置全屏背景图片
+     */
     #home {
       background: url('images/5.jpg') center/cover no-repeat;
       color: white;
@@ -79,6 +93,10 @@
       text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
     }
 
+    /**
+     * 文本元素样式
+     * @description 定义标题、段落的基本字体大小和间距
+     */
     h1 {
       font-size: 2.5rem;
       margin-bottom: 20px;
@@ -90,6 +108,10 @@
       line-height: 1.6;
     }
 
+    /**
+     * 按钮样式
+     * @description 定义通用按钮的外观和交互效果
+     */
     button {
       margin-top: 20px;
       padding: 10px 24px;
@@ -107,7 +129,10 @@
       color: black;
     }
 
-    /* 壁纸画廊网格 */
+    /**
+     * 壁纸画廊网格布局
+     * @description 使用CSS Grid创建响应式的图片和视频展示网格
+     */
     .wallpaper-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -129,7 +154,11 @@
       aspect-ratio: 16 / 9;
     }
 
-    /* 弹窗 */
+    /**
+     * 密码弹窗样式
+     * @description 定义模态弹窗的布局和外观
+     * @note 默认隐藏，通过JavaScript控制显示/隐藏
+     */
     .modal {
       display: none;
       position: fixed;
@@ -150,6 +179,10 @@
       text-align: center;
     }
 
+    /**
+     * 输入框样式
+     * @description 定义密码输入框的外观
+     */
     input {
       width: 100%;
       padding: 12px;
@@ -161,7 +194,10 @@
       font-size: 16px;
     }
 
-    /* 手机适配 */
+    /**
+     * 响应式设计 - 平板适配
+     * @description 针对768px以下屏幕尺寸的样式调整
+     */
     @media (max-width: 768px) {
       h1 { font-size: 1.8rem; }
       p { font-size: 1rem; }
@@ -173,6 +209,10 @@
       }
     }
 
+    /**
+     * 响应式设计 - 手机适配
+     * @description 针对480px以下屏幕尺寸的样式调整
+     */
     @media (max-width: 480px) {
       .wallpaper-grid {
         grid-template-columns: 1fr;
@@ -180,9 +220,12 @@
     }
   </style>
 </head>
+<!-- 页面主体 -->
 <body>
 
-  <!-- 导航菜单 -->
+  <!-- 导航菜单组件 -->
+  <!-- 说明：固定在顶部的导航栏，使用data-page属性关联对应的页面区块 -->
+  <!-- 通过JavaScript控制导航切换和激活状态 -->
   <div class="nav-container">
     <ul id="menu">
       <li data-page="home">🏠 首页</li>
@@ -191,21 +234,27 @@
     </ul>
   </div>
 
-  <!-- 首页 -->
+  <!-- 首页内容区块 -->
+  <!-- 说明：网站入口页面，默认显示，使用active类控制可见性 -->
+  <!-- 设置了全屏背景图片，包含主标题和导航按钮 -->
   <section id="home" class="page active">
     <h1>月下人独</h1>
     <p>欢迎来到我的博客<br>这里什么也没有。</p>
     <button onclick="navigate('wallpapers')">进入壁纸世界</button>
   </section>
 
-  <!-- 壁纸分享引导页 -->
+  <!-- 壁纸分享引导页面 -->
+  <!-- 说明：密码保护前的引导页，点击按钮会显示密码验证弹窗 -->
   <section id="wallpapers" class="page">
     <h1>🖼️ 壁纸分享</h1>
     <p>输入密码后即可查看高清壁纸与动态视频。</p>
     <button onclick="showPasswordModal()">确认</button>
   </section>
 
-  <!-- 壁纸画廊（包含全部图片 + 视频） -->
+  <!-- 壁纸画廊页面 -->
+  <!-- 说明：受密码保护的内容页面，成功验证后显示 -->
+  <!-- 使用CSS Grid布局展示图片和视频资源 -->
+  <!-- 图片和视频均设置了圆角和响应式尺寸 -->
   <section id="gallery" class="page">
     <h1>🖼️ 我的壁纸</h1>
     <div class="wallpaper-grid">
@@ -220,13 +269,16 @@
     <button onclick="navigate('home')" style="margin-top:20px;">返回首页</button>
   </section>
 
-  <!-- 关于我 -->
+  <!-- 关于我页面 -->
+  <!-- 说明：博主信息介绍页面，同样使用全屏背景图片 -->
   <section id="about" class="page">
     <h1>关于我</h1>
     <p>我是月下人独。<br>此博客用于测试。</p>
   </section>
 
-  <!-- 密码弹窗 -->
+  <!-- 密码验证弹窗 -->
+  <!-- 说明：模态弹窗组件，默认隐藏，用于内容访问控制 -->
+  <!-- 包含密码输入框和验证按钮 -->
   <div id="passwordModal" class="modal">
     <div class="modal-content">
       <h2>🔒 访问壁纸分享</h2>
@@ -238,54 +290,101 @@
   </div>
 
   <script>
-    // 页面切换
+    /**
+     * 页面切换函数
+     * @function navigate
+     * @description 用于在不同页面区域之间切换显示，并更新导航菜单的激活状态
+     * @param {string} pageId - 目标页面的ID选择器（如'home', 'wallpapers', 'gallery', 'about'）
+     * @returns {void}
+     * @example
+     * // 切换到壁纸页面
+     * navigate('wallpapers');
+     */
     function navigate(pageId) {
+      // 隐藏所有页面
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      
+      // 显示目标页面
       const target = document.getElementById(pageId);
       if (target) target.classList.add('active');
       
+      // 更新导航菜单的激活状态
       document.querySelectorAll('#menu li').forEach(li => {
         li.classList.toggle('active', li.dataset.page === pageId);
       });
     }
 
-    // 密码弹窗
+    /**
+     * 显示密码验证弹窗
+     * @function showPasswordModal
+     * @description 显示用于访问受保护内容的密码输入弹窗
+     * @returns {void}
+     * @example
+     * // 点击按钮后显示密码弹窗
+     * button.addEventListener('click', showPasswordModal);
+     */
     function showPasswordModal() {
       document.getElementById('passwordModal').style.display = 'flex';
     }
 
+    /**
+     * 关闭密码验证弹窗
+     * @function closeModal
+     * @description 隐藏密码输入弹窗
+     * @returns {void}
+     */
     function closeModal() {
       document.getElementById('passwordModal').style.display = 'none';
     }
 
-    // 密码验证（默认密码：123456）
+    /**
+     * 验证密码并控制访问权限
+     * @function checkPassword
+     * @description 检查用户输入的密码是否正确，如果正确则导航到壁纸画廊页面
+     * @returns {void}
+     * @note 当前使用硬编码的密码'123456'进行验证，仅用于演示目的
+     */
     function checkPassword() {
       const pwd = document.getElementById('passwordInput').value;
       if (pwd === '123456') {
         closeModal();
-        navigate('gallery'); // 跳转到壁纸画廊
+        navigate('gallery'); // 验证成功后跳转到壁纸画廊
       } else {
         alert('密码错误，请重试 ❌');
       }
     }
 
-    // 初始化
+    /**
+     * 页面初始化
+     * @description 设置首页为初始活动页面
+     */
     document.querySelector('#menu li[data-page="home"]').classList.add('active');
 
-    // 菜单点击
+    /**
+     * 导航菜单事件绑定
+     * @description 为每个导航菜单项添加点击事件监听器，实现页面切换功能
+     */
     document.querySelectorAll('#menu li').forEach(li => {
       li.addEventListener('click', () => {
         navigate(li.dataset.page);
       });
     });
 
-    // 点击弹窗外关闭
+    /**
+     * 弹窗外部点击关闭事件
+     * @description 当用户点击弹窗外部区域时自动关闭弹窗
+     * @param {MouseEvent} e - 鼠标点击事件对象
+     */
     window.onclick = function(e) {
       const modal = document.getElementById('passwordModal');
       if (e.target === modal) closeModal();
     };
 
-    // 视频互斥播放（可选）
+    /**
+     * 视频互斥播放控制
+     * @description 确保同一时间只有一个视频在播放，提升用户体验和性能
+     * @note 此功能为可选增强，减少多视频同时播放对性能的影响
+     */
     document.querySelectorAll('video').forEach(video => {
       video.addEventListener('play', () => {
         document.querySelectorAll('video').forEach(v => {
