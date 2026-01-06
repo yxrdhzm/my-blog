@@ -457,7 +457,7 @@
   <!-- 通过JavaScript控制导航切换和激活状态 -->
   <div class="nav-container">
     <ul id="menu">
-      <li data-page="home">✨ 精选</li>
+      <li data-page="home">🏠 首页</li>
       <li data-page="gallery">🖼️ 画廊</li>
       <li data-page="about">🤖 关于</li>
     </ul>
@@ -467,29 +467,29 @@
   <!-- 说明：网站入口页面，默认显示，使用active类控制可见性 -->
   <!-- 卡片式信息流布局 -->
   <section id="home" class="page active">
-    <h1>✨ 精选内容</h1>
+    <h1>🏠 首页</h1>
     <div class="card-grid">
-      <div class="card">
-        <img src="images/5.jpg" alt="图片1" class="card-image" onclick="showImageModal('images/5.jpg', '1')">
+      <div class="card" onclick="window.open('https://www.bilibili.com', '_blank')" style="cursor: pointer;">
+        <div style="font-size: 60px; margin: 20px 0;">📺</div>
         <div class="card-content">
-          <h3 class="card-title">1</h3>
-          <p class="card-desc">测试</p>
-          <div class="card-meta">
-            <span class="likes">❤️ 7516</span>
-            <span class="comments">💬 128</span>
-          </div>
+          <h3 class="card-title">Bilibili</h3>
+          <p class="card-desc">哔哩哔哩，一个充满动漫、游戏、生活等各类视频内容的弹幕社区，年轻人的文化交流平台。</p>
         </div>
       </div>
       
-      <div class="card">
-        <img src="images/2.jpg" alt="图片2" class="card-image" onclick="showImageModal('images/2.jpg', '2')">
+      <div class="card" onclick="window.open('https://github.com', '_blank')" style="cursor: pointer;">
+        <div style="font-size: 60px; margin: 20px 0;">💻</div>
         <div class="card-content">
-          <h3 class="card-title">2</h3>
-          <p class="card-desc">测试</p>
-          <div class="card-meta">
-            <span class="likes">❤️ 3996</span>
-            <span class="comments">💬 89</span>
-          </div>
+          <h3 class="card-title">GitHub</h3>
+          <p class="card-desc">全球最大的代码托管平台，开发者协作工具，开源项目聚集地，提供版本控制和代码托管服务。</p>
+        </div>
+      </div>
+      
+      <div class="card" onclick="window.open('https://www.bing.com/images/trending', '_blank')" style="cursor: pointer;">
+        <div style="font-size: 60px; margin: 20px 0;">🖼️</div>
+        <div class="card-content">
+          <h3 class="card-title">必应壁纸</h3>
+          <p class="card-desc">微软必应提供的每日壁纸服务，精选全球优质摄影作品，可免费下载用作桌面背景。</p>
         </div>
       </div>
     </div>
